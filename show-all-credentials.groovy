@@ -15,9 +15,9 @@ def retrieveCredentials(String... credIds) {
   crendentialsProviders['System'] = Jenkins.instanceOrNull.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0]
   
   // Get User credentials provider
-  crendentialsProviders['User'] = User.current().properties.find { k,v ->
+  crendentialsProviders['User'] = User.current()?.properties.find { k,v ->
     k instanceof com.cloudbees.plugins.credentials.UserCredentialsProvider$UserCredentialsProperty$DescriptorImpl
-  }.value
+  }?.value
   
   // Get Folder credentials providers
   Jenkins.instance.allItems().findAll { item ->
@@ -34,7 +34,7 @@ def retrieveCredentials(String... credIds) {
   // Parse all credentials providers to display credentials matching given credential IDs
   crendentialsProviders.each { providerId, credentialsProvider ->
     // Parse all domain credentials
-    credentialsProvider.domainCredentialsMap.each { domainCredentials,credentials ->
+    credentialsProvider?.domainCredentialsMap.each { domainCredentials,credentials ->
       // lookup for given credential Ids if any or all of them if not.
       credentials.findAll{ credential ->        	
           credIds.size() == 0 || credential.id in credIds
